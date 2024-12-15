@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Comparison</title>
+</head>
+<body>
+    <h1>Upload Image to Compare Faces</h1>
+    
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="uploadImage()">Upload and Compare</button>
+    
+    <div id="result"></div>
+    
+    <script>
+        // ฟังก์ชันในการส่งไฟล์ภาพไปที่ Backend
+        function uploadImage() {
+            const fileInput = document.getElementById('imageInput');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please select an image!');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', file);  // ส่งไฟล์ภาพไปใน form data
+
+            // ใช้ URL ของ Flask API ที่รันอยู่ในเครื่องหรือผ่าน ngrok
+            fetch('https://2712-223-207-239-159.ngrok-free.app/compare-face', {  // เปลี่ยน URL ให้ตรงกับ ngrok URL
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // แสดงผลการเปรียบเทียบใบหน้า
+                document.getElementById('result').innerText = data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
